@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 
-	SLANG_STEP_1 "github.com/sinsinan/golang-slang/step1/SLANG_STEP"
+	"github.com/sinsinan/golang-slang/step1/SLANG_STEP1"
 )
 
 func main() {
-	e := SLANG_STEP_1.NumericConstant(10)
-	fmt.Println("ssina")
+	exp := SLANG_STEP1.BinaryExp(SLANG_STEP1.NumericConstant(10), SLANG_STEP1.NumericConstant(20), SLANG_STEP1.PLUS)
+	if value, ok := SLANG_STEP1.Evaluate(exp); ok {
+		fmt.Println(value)
+	}
 }

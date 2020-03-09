@@ -1,4 +1,4 @@
-package SLANG_STEP_1
+package SLANG_STEP1
 
 //Operators these are the valid operators
 type Operators string
@@ -18,7 +18,6 @@ const (
 
 //Exp is an interface with a function Evaluate which returns a float64
 type Exp interface {
-	Evaluate() float64
 }
 
 //NumericConstantType is the type for numericconstant
@@ -59,59 +58,79 @@ func UnaryExp(ex Exp, op Operators) *UnaryExpType {
 
 //EvaluateNumericConstant returns the (float64)value in the given NumericConstantType
 func EvaluateNumericConstant(nc NumericConstantType) (float64, bool) {
-	return nc.value, false
+	return nc.value, true
 }
 
 //EvaluateBinaryExp evaluates the given binary expression
 func EvaluateBinaryExp(be BinaryExpType) (float64, bool) {
 	switch be.op {
 	case PLUS:
-		return (be.ex1.Evaluate() + be.ex2.Evaluate()), false
+		value1, ok1 := Evaluate(be.ex1)
+		value2, ok2 := Evaluate(be.ex2)
+		if ok1 && ok2 {
+			return value1 + value2, true
+		}
 	case MINUS:
-		return (be.ex1.Evaluate() - be.ex2.Evaluate()), false
+		value1, ok1 := Evaluate(be.ex1)
+		value2, ok2 := Evaluate(be.ex2)
+		if ok1 && ok2 {
+			return value1 - value2, true
+		}
 	case DIV:
-		return (be.ex1.Evaluate() / be.ex2.Evaluate()), false
+		value1, ok1 := Evaluate(be.ex1)
+		value2, ok2 := Evaluate(be.ex2)
+		if ok1 && ok2 {
+			return value1 / value2, true
+		}
 	case MUL:
-		return (be.ex1.Evaluate() * be.ex2.Evaluate()), false
-	default:
-		return -1, true
+		value1, ok1 := Evaluate(be.ex1)
+		value2, ok2 := Evaluate(be.ex2)
+		if ok1 && ok2 {
+			return value1 * value2, true
+		}
 	}
+	return -1, false
 }
 
 //EvaluateUnaryExp evaluates the given unary expression
 func EvaluateUnaryExp(ue UnaryExpType) (float64, bool) {
 	switch ue.op {
 	case PLUS:
-		return ue.ex.Evaluate(), false
+		if value, ok := Evaluate(ue.ex); ok {
+			return value, ok
+		}
 	case MINUS:
-		return -ue.ex.Evaluate(), false
-	default:
-		return -1, true
+		if value, ok := Evaluate(ue.ex); ok {
+			return -value, ok
+		}
 	}
+
+	return -1, false
 }
 
 //Evaluate returns the (float64)value in the given NumericConstantType, BinaryExpType, UnaryExpType
 func Evaluate(exp interface{}) (float64, bool) {
 	switch exp.(type) {
-	case NumericConstantType:
+	case *NumericConstantType:
 		if nc, ok :=
-			exp.(NumericConstantType); ok {
-			return EvaluateNumericConstant(nc)
+			exp.(*NumericConstantType); ok {
+			return EvaluateNumericConstant(*nc)
 		}
 
-	case BinaryExpType:
+	case *BinaryExpType:
 		if be, ok :=
-			exp.(BinaryExpType); ok {
-			return EvaluateBinaryExp(be)
+			exp.(*BinaryExpType); ok {
+			return EvaluateBinaryExp(*be)
 		}
 
-	case UnaryExpType:
+	case *UnaryExpType:
+
 		if ue, ok :=
-			exp.(UnaryExpType); ok {
-			return EvaluateUnaryExp(ue)
+			exp.(*UnaryExpType); ok {
+			return EvaluateUnaryExp(*ue)
 		}
 
 	}
 
-	return 0, true
+	return -1, false
 }
