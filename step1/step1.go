@@ -4,10 +4,15 @@ package step1
 type Operators string
 
 const (
-	PLUS    Operators = "+"
-	MINUS   Operators = "-"
-	DIV     Operators = "/"
-	MUL     Operators = "*"
+	//PLUS + operator
+	PLUS Operators = "+"
+	//MINUS - operator
+	MINUS Operators = "-"
+	//DIV / operator
+	DIV Operators = "/"
+	//MUL * operator
+	MUL Operators = "*"
+	//INVALID invalid operator
 	INVALID Operators = "-1"
 )
 
@@ -30,9 +35,8 @@ type BinaryExpType struct {
 
 //UnaryExpType is the type for unary expressions
 type UnaryExpType struct {
-	ex1 Exp
-	ex2 Exp
-	op  Operators
+	ex Exp
+	op Operators
 }
 
 //NumericConstant returns a NumericConstantType type with given value
@@ -62,18 +66,40 @@ func EvaluateBinaryExpType(be BinaryExpType) (float64, bool) {
 	}
 }
 
+//EvaluateUnaryExpType evaluates the given unary expression
+func EvaluateUnaryExpType(ue UnaryExpType) (float64, bool) {
+	switch ue.op {
+	case PLUS:
+		return ue.ex.Evaluate(), false
+	case MINUS:
+		return -ue.ex.Evaluate(), false
+	default:
+		return -1, true
+	}
+}
+
 //Evaluate returns the (float64)value in the given NumericConstantType, BinaryExpType, UnaryExpType
 func Evaluate(exp interface{}) (float64, bool) {
 	switch exp.(type) {
 	case NumericConstantType:
-		nc, ok :=
-			exp.(NumericConstantType)
-		return 0, EvaluateNumericConstant(nc)
+		if nc, ok :=
+			exp.(NumericConstantType); ok {
+			return EvaluateNumericConstant(nc)
+		}
+
 	case BinaryExpType:
-		return 0, exp.EvaluateBinaryExpType()
+		if be, ok :=
+			exp.(BinaryExpType); ok {
+			return EvaluateBinaryExpType(be)
+		}
+
 	case UnaryExpType:
-		return 0, exp.EvaluateUnaryExpType()
-	default:
-		return 0, true
+		if ue, ok :=
+			exp.(UnaryExpType); ok {
+			return EvaluateUnaryExpType(ue)
+		}
+
 	}
+
+	return 0, true
 }
