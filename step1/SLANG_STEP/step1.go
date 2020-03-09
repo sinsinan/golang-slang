@@ -1,4 +1,4 @@
-package step1
+package SLANG_STEP_1
 
 //Operators these are the valid operators
 type Operators string
@@ -45,13 +45,25 @@ func NumericConstant(value float64) *NumericConstantType {
 	return &nc
 }
 
+//BinaryExp returns a BinaryExpType type with given values
+func BinaryExp(ex1 Exp, ex2 Exp, op Operators) *BinaryExpType {
+	be := BinaryExpType{ex1, ex2, op}
+	return &be
+}
+
+//UnaryExp returns a UnaryExpType type with given values
+func UnaryExp(ex Exp, op Operators) *UnaryExpType {
+	ue := UnaryExpType{ex, op}
+	return &ue
+}
+
 //EvaluateNumericConstant returns the (float64)value in the given NumericConstantType
 func EvaluateNumericConstant(nc NumericConstantType) (float64, bool) {
 	return nc.value, false
 }
 
-//EvaluateBinaryExpType evaluates the given binary expression
-func EvaluateBinaryExpType(be BinaryExpType) (float64, bool) {
+//EvaluateBinaryExp evaluates the given binary expression
+func EvaluateBinaryExp(be BinaryExpType) (float64, bool) {
 	switch be.op {
 	case PLUS:
 		return (be.ex1.Evaluate() + be.ex2.Evaluate()), false
@@ -66,8 +78,8 @@ func EvaluateBinaryExpType(be BinaryExpType) (float64, bool) {
 	}
 }
 
-//EvaluateUnaryExpType evaluates the given unary expression
-func EvaluateUnaryExpType(ue UnaryExpType) (float64, bool) {
+//EvaluateUnaryExp evaluates the given unary expression
+func EvaluateUnaryExp(ue UnaryExpType) (float64, bool) {
 	switch ue.op {
 	case PLUS:
 		return ue.ex.Evaluate(), false
@@ -90,13 +102,13 @@ func Evaluate(exp interface{}) (float64, bool) {
 	case BinaryExpType:
 		if be, ok :=
 			exp.(BinaryExpType); ok {
-			return EvaluateBinaryExpType(be)
+			return EvaluateBinaryExp(be)
 		}
 
 	case UnaryExpType:
 		if ue, ok :=
 			exp.(UnaryExpType); ok {
-			return EvaluateUnaryExpType(ue)
+			return EvaluateUnaryExp(ue)
 		}
 
 	}
