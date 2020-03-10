@@ -8,7 +8,7 @@ import (
 type LexerType struct {
 	iexpr  string
 	length int
-	index  int
+	Index  int
 }
 
 type Token byte
@@ -32,29 +32,32 @@ func Lexer(exp string) *LexerType {
 }
 
 //GetToken is used get token from a given lexer
-func GetToken(lexer LexerType) (byte, float64, bool) {
+func GetToken(lexer *LexerType) (byte, float64, bool) {
 	tok := TOK_ILLEGAL
+	// fmt.Println(lexer)
 	var floatVal float64 = 0
 	ok := false
-	for lexer.index < lexer.length && lexer.iexpr[lexer.index] == '\t' {
-		lexer.index++
+	for lexer.Index < lexer.length && lexer.iexpr[lexer.Index] == '\t' {
+		lexer.Index++
 	}
 
-	if lexer.index == lexer.length {
+	if lexer.Index == lexer.length {
 		tok = TOK_NULL
 		ok = true
+		return tok, floatVal, ok
 	}
 
-	switch lexer.iexpr[lexer.index] {
+	switch lexer.iexpr[lexer.Index] {
 	case TOK_PLUS, TOK_MUL, TOK_DIV, TOK_SUB, TOK_OPAREN, TOK_CPAREN:
-		lexer.index++
-		return lexer.iexpr[lexer.index], 0, true
+		tok = lexer.iexpr[lexer.Index]
+		lexer.Index++
+		ok = true
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
-		lexer.index++
-		var numberString string = string(lexer.iexpr[lexer.index])
-		for lexer.index < lexer.length && (lexer.iexpr[lexer.index] == '0' || lexer.iexpr[lexer.index] == '1' || lexer.iexpr[lexer.index] == '2' || lexer.iexpr[lexer.index] == '3' || lexer.iexpr[lexer.index] == '4' || lexer.iexpr[lexer.index] == '5' || lexer.iexpr[lexer.index] == '6' || lexer.iexpr[lexer.index] == '7' || lexer.iexpr[lexer.index] == '8' || lexer.iexpr[lexer.index] == '9') {
-			numberString += string(lexer.iexpr[lexer.index])
-			lexer.index++
+		var numberString string = string(lexer.iexpr[lexer.Index])
+		lexer.Index++
+		for lexer.Index < lexer.length && (lexer.iexpr[lexer.Index] == '0' || lexer.iexpr[lexer.Index] == '1' || lexer.iexpr[lexer.Index] == '2' || lexer.iexpr[lexer.Index] == '3' || lexer.iexpr[lexer.Index] == '4' || lexer.iexpr[lexer.Index] == '5' || lexer.iexpr[lexer.Index] == '6' || lexer.iexpr[lexer.Index] == '7' || lexer.iexpr[lexer.Index] == '8' || lexer.iexpr[lexer.Index] == '9') {
+			numberString += string(lexer.iexpr[lexer.Index])
+			lexer.Index++
 		}
 		if s, err := strconv.ParseFloat(numberString, 64); err == nil {
 			floatVal = s
