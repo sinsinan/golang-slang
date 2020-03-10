@@ -32,7 +32,7 @@ func Lexer(exp string) *LexerType {
 }
 
 //GetToken is used get token from a given lexer
-func GetToken(lexer LexerType) (string, float64, bool) {
+func GetToken(lexer LexerType) (byte, float64, bool) {
 	tok := TOK_ILLEGAL
 	var floatVal float64 = 0
 	ok := false
@@ -48,7 +48,7 @@ func GetToken(lexer LexerType) (string, float64, bool) {
 	switch lexer.iexpr[lexer.index] {
 	case TOK_PLUS, TOK_MUL, TOK_DIV, TOK_SUB, TOK_OPAREN, TOK_CPAREN:
 		lexer.index++
-		return string(lexer.iexpr[lexer.index]), 0, true
+		return lexer.iexpr[lexer.index], 0, true
 	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 		lexer.index++
 		var numberString string = string(lexer.iexpr[lexer.index])
@@ -63,5 +63,5 @@ func GetToken(lexer LexerType) (string, float64, bool) {
 		}
 	}
 
-	return string(tok), floatVal, ok
+	return tok, floatVal, ok
 }
