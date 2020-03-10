@@ -1,4 +1,4 @@
-package SLANG_STEP1
+package ast
 
 //Operators these are the valid operators
 type Operators string
